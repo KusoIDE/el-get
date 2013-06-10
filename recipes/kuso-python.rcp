@@ -1,0 +1,7 @@
+(:name kuso-python
+       :depends (python-mode)
+       :type github
+       :pkgname "KusoIDE/kuso_python"
+       :branch master
+       :website "http://kuso.lxsameer.com"
+       :description "Kuso IDE python support plugin.")
