@@ -1,5 +1,5 @@
 (:name kuso-python
-       :depends (python-mode)
+       :depends (python-mode jedi)
        :type github
        :pkgname "KusoIDE/kuso_python"
        :branch "master"
