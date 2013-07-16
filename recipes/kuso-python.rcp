@@ -4,4 +4,11 @@
        :pkgname "KusoIDE/kuso_python"
        :branch "master"
        :website "http://kuso.lxsameer.com"
-       :description "Kuso IDE python support plugin.")
+       :description "Kuso IDE python support plugin."
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso_python.el"))
+                  (load-file init-file)
+                  )
+                )
+       )
