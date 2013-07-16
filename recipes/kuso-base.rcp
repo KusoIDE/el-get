@@ -1,0 +1,14 @@
+(:name kuso-base
+       :depends (auto-complete-yasnippet color-theme color-theme-tomorrow ac-dabbrev ido-ubiquitous workgroups hideshow-org)
+       :type github
+       :pkgname "KusoIDE/kuso_base"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :description "Kuso IDE base plugin."
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso_base.el"))
+                  (load-file init-file)
+                  )
+                )
+       )
