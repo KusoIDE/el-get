@@ -1,0 +1,14 @@
+(:name kuso-installer
+       :depends ()
+       :type github
+       :pkgname "KusoIDE/kuso_installer"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :description "Kuso IDE installer plugin."
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso_installer.el"))
+                  (load-file init-file)
+                  )
+                )
+       )
