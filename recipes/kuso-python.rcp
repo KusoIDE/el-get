@@ -7,7 +7,7 @@
        :description "Kuso IDE python support plugin."
        :after (progn
                 (let (init-file)
-                  (setq init-file (concat default-directory "kuso_python.el"))
+                  (setq init-file (concat default-directory "kuso-python.el"))
                   (load-file init-file)
                   )
                 )

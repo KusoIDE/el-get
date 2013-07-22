@@ -7,7 +7,7 @@
        :description "Kuso IDE base plugin."
        :after (progn
                 (let (init-file)
-                  (setq init-file (concat default-directory "kuso_base.el"))
+                  (setq init-file (concat default-directory "kuso-base.el"))
                   (load-file init-file)
                   )
                 )
