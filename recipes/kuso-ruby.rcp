@@ -1,5 +1,15 @@
 (:name kuso-ruby
-       :depends (ruby-mode inf-ruby flymake-ruby ruby-block rinari rhtml-mode yaml-mode haml-mode scss-mode sass-mode )
+       :depends (ruby-mode
+                 inf-ruby
+                 flymake-ruby
+                 rinari
+                 rhtml-mode
+                 yaml-mode
+                 haml-mode
+                 ;yari
+                 ;rdebug
+                 ruby-electric
+                 kuso-web)
        :type github
        :pkgname "KusoIDE/kuso_ruby"
        :branch "master"

@@ -1,5 +1,13 @@
 (:name kuso-base
-       :depends (auto-complete-yasnippet color-theme color-theme-tomorrow ac-dabbrev workgroups hideshow-org flymake)
+       :depends (auto-complete-yasnippet
+                 color-theme
+                 color-theme-tomorrow
+                 ac-dabbrev
+                 workgroups
+                 hideshow-org
+                 auto-pair-plus
+                 ;helm
+                 flymake)
        :type github
        :pkgname "KusoIDE/kuso_base"
        :branch "master"

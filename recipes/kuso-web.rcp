@@ -1,0 +1,21 @@
+(:name kuso-web
+       :depends (emmet js2-mode css-mode
+                       flymake-css
+                       auto-complete-css
+                       coffee-mode
+                       flymake-coffee
+                       scss-mode
+                       sass-mode)
+
+       :type github
+       :pkgname "KusoIDE/kuso_web"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :description "Kuso IDE web design related plugin."
+;       :after (progn
+;                (let (init-file)
+;                  (setq init-file (concat default-directory "kuso-web.el"))
+;                  (load-file init-file)
+;                  )
+;                )
+       )

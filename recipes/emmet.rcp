@@ -1,0 +1,10 @@
+(:name emmet
+       :type github
+       :pkgname "smihica/emmet-mode"
+       :branch "master"
+       :website "https://github.com/smihica/emmet-mode"
+       :description "Unofficial emmet's support for emacs. http://www.emacswiki.org/emacs/ZenCoding"
+       :prepare (progn
+                  (add-hook 'sgml-mode-hook 'emmet-mode)
+                  (add-hook 'css-mode-hook  'emmet-mode)
+                  (setq emmet-move-cursor-between-quotes t)))
