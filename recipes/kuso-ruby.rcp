@@ -1,0 +1,14 @@
+(:name kuso-ruby
+       :depends (ruby-mode inf-ruby flymake-ruby ruby-block rinari rhtml-mode yaml-mode haml-mode scss-mode sass-mode )
+       :type github
+       :pkgname "KusoIDE/kuso_ruby"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :description "Kuso IDE Ruby support plugin."
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso-ruby.el"))
+                  (load-file init-file)
+                  )
+                )
+       )
