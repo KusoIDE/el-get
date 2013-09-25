@@ -6,6 +6,8 @@
                  workgroups
                  hideshow-org
                  auto-pair-plus
+                 dired+
+                 sr-speedbar
                  ;helm
                  flymake)
        :type github
