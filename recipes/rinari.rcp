@@ -4,7 +4,7 @@
        :pkgname "eschulte/rinari"
        :load-path ("." "util" "util/jump")
        :compile ("\\.el$" "util")
-       :build (("bundle")
-               ("rake" "doc:install_info"))
-       :info "doc"
+       ;:build (("`which bundle`")
+       ;        ("rake" "doc:install_info"))
+       ;:info "doc"
        :features rinari)
