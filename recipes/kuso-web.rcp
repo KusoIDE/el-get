@@ -12,10 +12,10 @@
        :branch "master"
        :website "http://kuso.lxsameer.com"
        :description "Kuso IDE web design related plugin."
-;       :after (progn
-;                (let (init-file)
-;                  (setq init-file (concat default-directory "kuso-web.el"))
-;                  (load-file init-file)
-;                  )
-;                )
-       )
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso-web.el"))
+                  (load-file init-file)
+                  )
+                )
+      )
