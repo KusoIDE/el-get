@@ -9,6 +9,7 @@
                  ;yari
                  ;rdebug
                  ruby-electric
+                 rbenv
                  kuso-web)
        :type github
        :pkgname "KusoIDE/kuso_ruby"

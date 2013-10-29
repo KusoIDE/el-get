@@ -1,0 +1,12 @@
+(:name handlebars-mode
+       :depends ()
+       :type github
+       :pkgname "danielevans/handlebars-mode"
+       :branch "master"
+       :website "https://github.com/danielevans/handlebars-mode"
+       :description "Emacs Major Mode for Mustache and Handlebar"
+       :features (handlebars-mode)
+       :prepare (progn
+                (add-to-list 'auto-mode-alist '("\\.hjs$" . handlebars-mode))
+                (add-to-list 'auto-mode-alist '("\\.hbs$" . handlebars-mode))
+       )
