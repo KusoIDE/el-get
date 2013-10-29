@@ -51,6 +51,11 @@
                        (el-get-update package)))
   'help-echo (purecopy "mouse-2, RET: update package"))
 
+(define-button-type 'el-get-help-cd
+  :supertype 'help-xref
+  'help-function #'dired
+  'help-echo (purecopy "mouse-2, RET: open directory"))
+
 (define-button-type 'el-get-help-describe-package
   :supertype 'help-xref
   'help-function #'el-get-describe
@@ -80,25 +85,32 @@ matching REGEX with TYPE and ARGS as parameter."
          (def (el-get-package-def pname))
          (name (plist-get def :name))
          (website (plist-get def :website))
+         (directory (el-get-package-directory package))
          (descr (plist-get def :description))
-         (type (plist-get def :type))
+         (type (el-get-package-method def))
+         (builtin (plist-get def :builtin))
+         (minimum-version (plist-get def :minimum-emacs-version))
          (url (plist-get def :url))
          (depends (plist-get def :depends)))
-    (princ (format "%s is an `el-get' package. It is currently %s " name
-                   (if status status "not installed")))
-
-    (cond
-     ((string= status "installed")
-      (el-get-describe-princ-button "[update]" "\\[\\([^]]+\\)\\]"
-                                    'el-get-help-update package)
-      (el-get-describe-princ-button "[remove]" "\\[\\([^]]+\\)\\]"
-                                    'el-get-help-remove package))
-     ((string= status "required")
-      (el-get-describe-princ-button "[update]" "\\[\\([^]]+\\)\\]"
-                                    'el-get-help-update package))
-     (t
-      (el-get-describe-princ-button "[install]" "\\[\\([^]]+\\)\\]"
-                                    'el-get-help-install package)))
+    (princ (format "%s is an `el-get' package.  " name))
+    (if (eq type 'builtin)
+        (princ (format "It is built-in since Emacs %s" builtin))
+      (princ (format "It is currently %s "
+                     (if status
+                         status
+                       "not installed")))
+      (cond
+       ((string= status "installed")
+        (el-get-describe-princ-button "[update]" "\\[\\([^]]+\\)\\]"
+                                      'el-get-help-update package)
+        (el-get-describe-princ-button "[remove]" "\\[\\([^]]+\\)\\]"
+                                      'el-get-help-remove package))
+       ((string= status "required")
+        (el-get-describe-princ-button "[update]" "\\[\\([^]]+\\)\\]"
+                                      'el-get-help-update package))
+       (t
+        (el-get-describe-princ-button "[install]" "\\[\\([^]]+\\)\\]"
+                                      'el-get-help-install package))))
     (princ ".\n\n")
 
     (let ((website (or website
@@ -121,8 +133,22 @@ matching REGEX with TYPE and ARGS as parameter."
          (format "`%s'" depends) "`\\([^`']+\\)"
          'el-get-help-describe-package depends))
       (princ ".\n"))
-    (princ (format "The default installation method is %s %s\n\n" type
-                   (if url (format "from %s" url) "")))
+    (when minimum-version
+      (princ (format "Requires minimum Emacs version: %s." minimum-version))
+      (when (version-list-< (version-to-list emacs-version)
+                            (el-get-version-to-list minimum-version))
+        (princ (format "  Warning: Your Emacs is too old (%s)!" emacs-version)))
+      (princ "\n"))
+    (if (eq type 'builtin)
+        (princ (format "The package is built-in since Emacs %s.\n" builtin))
+      (princ (format "The default installation method is %s%s.\n" type
+                     (if url (format " from %s" url) ""))))
+    (when (string= status "installed")
+      (princ "Installed in ")
+      (el-get-describe-princ-button (format "`%s'" directory) "`\\([^']+\\)"
+                                    'el-get-help-cd directory)
+      (princ ".\n"))
+    (princ "\n")
     (princ "Full definition")
     (let ((file (el-get-recipe-filename package)))
       (if (not file)

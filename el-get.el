@@ -345,6 +345,8 @@ package names."
        (string= "installed"
                 (el-get-read-package-status package))))
 
+(defalias 'el-get-package-installed-p #'el-get-package-is-installed)
+
 (defun el-get-read-package-name (action &optional filtered)
   "Ask user for a package name in minibuffer, with completion.
 
@@ -488,7 +490,6 @@ called by `el-get' (usually at startup) for each installed package."
              (postinit (plist-get source :post-init))
              (after    (plist-get source :after))
              (pkgname  (plist-get source :pkgname))
-             (library  (or (plist-get source :library) pkgname package))
              (pdir     (el-get-package-directory package)))
 
         (el-get-error-unless-required-emacs-version source)
@@ -625,7 +626,11 @@ PACKAGE may be either a string or the corresponding symbol."
 
     ;; el-get-post-build will care about autoloads and initializing the
     ;; package, and will change the status to "installed"
-    (el-get-build package commands nil sync 'el-get-post-install-build)))
+    (if (and (eq (el-get-package-method package) 'builtin)
+             (plist-get (el-get-package-def package) :builtin))
+        ;; Do not run :build/:info if package is :builtin.  Run post-install directly
+        (el-get-post-install-build package)
+      (el-get-build package commands nil sync 'el-get-post-install-build))))
 
 (defun el-get-do-install (package)
   "Install any PACKAGE for which you have a recipe."
@@ -837,6 +842,24 @@ itself.")
         ;; This is the only line that really matters
         (mapc 'el-get-update (el-get-list-package-names-with-status "installed"))))))
 
+;;;###autoload
+(defun el-get-update-packages-of-type (type)
+  "Update all installed packages of type TYPE."
+  ;; TODO Update info file about this new command
+  (interactive
+   (let ((types
+          (mapcar #'el-get-keyword-name
+                  (el-get-plist-keys el-get-methods))))
+     (list (completing-read
+            "Type name: " types nil t))))
+  (when (not (el-get-method-defined-p type))
+    (user-error "Unknown package type \"%s\"" type))
+  (let ((pkgnames
+         (mapcar 'car (el-get-package-types-alist
+                       "installed" (intern type)))))
+    (if pkgnames
+        (mapcar 'el-get-update pkgnames)
+      (message "No installed packages of type \"%s\"" type))))
 
 ;;;###autoload
 (defun el-get-self-update ()
@@ -880,9 +903,9 @@ itself.")
                (remove   (el-get-method method :remove))
                (url      (plist-get source :url)))
           ;; remove the package now
+          (el-get-save-package-status package "removed")
           (el-get-remove-autoloads package)
           (funcall remove package url 'el-get-post-remove)
-          (el-get-save-package-status package "removed")
           (message "el-get remove %s" package))))))
 
 (defun el-get-reinstall (package)
@@ -892,15 +915,26 @@ itself.")
   (el-get-install package))
 
 (defun el-get-cleanup (packages)
-  "Removes packages absent from the argument list
-'packages. Useful, for example, when we
-want to remove all packages not explicitly declared
-in the user-init-file (.emacs)."
-  (let* ((packages-to-keep (el-get-dependencies (mapcar 'el-get-as-symbol packages)))
-	 (packages-to-remove (set-difference (mapcar 'el-get-as-symbol
-						     (el-get-list-package-names-with-status
-						      "installed")) packages-to-keep)))
+  "Clean up packages installed with el-get.
+
+In particular, keep all of the packages listed in the 'packages
+argument list, and also keep all of the packages that the listed
+packages depend on.  Get rid of everything else.  Note that
+el-get-cleanup will not remove el-get itself, regardless of
+whether or not el-get is listed in the 'packages argument list.
+
+This is useful, for example, when we want to remove all packages not
+explicitly declared in the user-init-file (.emacs)."
+  (let* ((packages-to-keep (el-get-dependencies
+                            (mapcar 'el-get-as-symbol
+                                    (add-to-list 'packages 'el-get))))
+	 (packages-to-remove (set-difference
+                              (mapcar 'el-get-as-symbol
+                                      (el-get-list-package-names-with-status
+                                       "installed")) packages-to-keep)))
     (mapc 'el-get-remove packages-to-remove)))
+
+
 
 ;;;###autoload
 (defun el-get-cd (package)
@@ -1031,6 +1065,11 @@ already installed packages is considered."
          (total       (length packages))
          (installed   (el-get-count-packages-with-status packages "installed"))
          (el-get-default-process-sync sync))
+
+    ;; load autoloads before package init so :after blocks can use the
+    ;; autoloaded functions.
+    (unless el-get-is-lazy ; :after blocks aren't run til later when lazy
+      (el-get-eval-autoloads))
 
     ;; keep the result of `el-get-init-and-install' to return it even in the
     ;; 'wait case

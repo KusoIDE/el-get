@@ -25,17 +25,16 @@
 (require 'el-get-byte-compile)
 
 (defcustom el-get-recipe-path-emacswiki
-  (concat (file-name-directory el-get-dir) "el-get/recipes/emacswiki/")
+  (expand-file-name "el-get/recipes/emacswiki/" el-get-dir)
   "Define where to keep a local copy of emacswiki recipes"
   :group 'el-get
   :type 'directory)
 
 (defcustom el-get-recipe-path-elpa
-  (concat (file-name-directory el-get-dir) "el-get/recipes/elpa/")
+  (expand-file-name "el-get/recipes/elpa/" el-get-dir)
   "Define where to keep a local copy of elpa recipes"
   :group 'el-get
   :type 'directory)
-
 
 (defvar el-get-recipe-path
   (list (concat (file-name-directory el-get-script) "recipes")
@@ -149,7 +148,7 @@ in `el-get-recipe-path' in order."
     (append
      el-get-sources
      (remove-if (lambda (recipe) (member (el-get-source-name recipe) packages))
-                (el-get-read-all-recipe-files)))))
+                (remove-if 'null (el-get-read-all-recipe-files))))))
 
 (defun el-get-package-def (package)
   "Return a single `el-get-sources' entry for PACKAGE."
@@ -276,13 +275,13 @@ object or a file path."
   (interactive (list (current-buffer)))
   (if (bufferp file-or-buffer)
       (with-current-buffer file-or-buffer
-        (el-get-check-recipe-in-current-buffer))
+        (el-get-check-recipe-in-current-buffer (buffer-file-name)))
     (with-temp-buffer
       (erase-buffer)
       (insert-file-contents file-or-buffer)
-      (el-get-check-recipe-in-current-buffer))))
+      (el-get-check-recipe-in-current-buffer file-or-buffer))))
 
-(defun el-get-check-recipe-in-current-buffer ()
+(defun el-get-check-recipe-in-current-buffer (recipe-file-name)
   (let ((recipe (save-excursion
                   (goto-char (point-min))
                   (read (current-buffer))))
@@ -291,6 +290,11 @@ object or a file path."
     (display-buffer buffer)
     (with-current-buffer buffer
       (erase-buffer)
+      (when (and recipe-file-name
+                 (not (string= (file-name-base recipe-file-name)
+                               (plist-get recipe :name))))
+        (incf numerror)
+        (insert "* File name should match recipe name.\n"))
       ;; Check if userspace property is used.
       (loop for key in '(:before :after)
             for alt in '(:prepare :post-init)
