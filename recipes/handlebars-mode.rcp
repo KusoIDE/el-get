@@ -1,5 +1,4 @@
 (:name handlebars-mode
-       :depends ()
        :type github
        :pkgname "danielevans/handlebars-mode"
        :branch "master"
@@ -9,4 +8,7 @@
        :prepare (progn
                 (add-to-list 'auto-mode-alist '("\\.hjs$" . handlebars-mode))
                 (add-to-list 'auto-mode-alist '("\\.hbs$" . handlebars-mode))
+                (add-to-list 'auto-mode-alist '("\\.handlebars$" . handlebars-mode))
+
        )
+)
