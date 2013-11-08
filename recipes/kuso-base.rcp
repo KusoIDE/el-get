@@ -9,6 +9,7 @@
                  dired+
                  sr-speedbar
                  ;helm
+                 paredit
                  flymake)
        :type github
        :pkgname "KusoIDE/kuso_base"

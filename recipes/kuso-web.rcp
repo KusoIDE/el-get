@@ -5,6 +5,13 @@
                        coffee-mode
                        flymake-coffee
                        scss-mode
+                       handlebars-mode
+                       s
+                       dash
+                       multiple-cursors
+                       js2-refactor
+                       ;tern
+                       js2-refactor
                        sass-mode)
 
        :type github
