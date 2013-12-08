@@ -2,6 +2,7 @@
        :description "Major mode for Cucumber feature files"
        :type github
        :pkgname "michaelklishin/cucumber.el"
+       :url-type "git"
        :features feature-mode
        :post-init (add-to-list 'auto-mode-alist
                                '("\\.feature\\'" . feature-mode)))

@@ -9,6 +9,8 @@
                  ;yari
                  ;rdebug
                  ruby-electric
+                 feature-mode
+                 rspec-mode
                  rbenv
                  kuso-web)
        :type github

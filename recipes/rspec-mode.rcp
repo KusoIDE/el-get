@@ -2,4 +2,5 @@
        :description "Enhance ruby-mode for RSpec"
        :type github
        :pkgname "pezra/rspec-mode"
+       :url-type "git"
        :features rspec-mode)
