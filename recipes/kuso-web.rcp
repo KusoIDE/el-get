@@ -11,7 +11,9 @@
                        js2-refactor
                        ;tern
                        js2-refactor
-                       sass-mode)
+                       sass-mode
+                       web-mode
+                       )
 
        :type github
        :pkgname "KusoIDE/kuso_web"

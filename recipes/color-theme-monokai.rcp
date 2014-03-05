@@ -1,0 +1,19 @@
+(:name color-theme-monokai
+       :depends color-theme
+       :type github
+       :description "TextMate theme Monokai port for Emacs color-theme"
+       :pkgname "lxsameer/monokai-theme"
+       :branch "master"
+       :url-type "git"
+       :load "monokai.el"
+       :feature color-theme-monokai
+       :prepare  (autoload 'color-theme-monokai "monokai"
+                    "color-theme: monokai" t)
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "monokai.el"))
+                  (load-file init-file)
+                  )
+                )
+
+       )

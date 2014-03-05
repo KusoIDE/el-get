@@ -2,4 +2,5 @@
        :website "https://github.com/bookest/arduino-mode"
        :description "Emacs major mode for Arduino development."
        :type github
+       :url-type "git"
        :pkgname "bookest/arduino-mode")
