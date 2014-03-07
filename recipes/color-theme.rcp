@@ -1,8 +1,8 @@
 (:name color-theme
        :description "An Emacs-Lisp package with more than 50 color themes for your use. For questions about color-theme"
        :website "http://www.nongnu.org/color-theme/"
-       :type git
-       :url "git@github.com:KusoIDE/color-theme.git"
+       :type github
+       :pkgname "KusoIDE/color-theme"
        :load "color-theme.el"
        :features "color-theme"
        :post-init (progn
