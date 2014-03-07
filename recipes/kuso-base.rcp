@@ -2,6 +2,7 @@
        :depends (auto-complete-yasnippet
                  color-theme
                  color-theme-tomorrow
+                 hl-line+
                  ac-dabbrev
                  workgroups
                  hideshow-org
