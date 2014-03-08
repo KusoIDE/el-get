@@ -12,6 +12,9 @@
                  feature-mode
                  rspec-mode
                  rbenv
+                 rails-mode
+                 git-commit-mode
+                 magit
                  kuso-web)
        :type github
        :pkgname "KusoIDE/kuso_ruby"

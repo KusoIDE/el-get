@@ -1,7 +1,8 @@
 (:name kuso-base
        :depends (auto-complete-yasnippet
+                 smex
                  color-theme
-                 color-theme-tomorrow
+                 color-theme-monokai
                  hl-line+
                  ac-dabbrev
                  workgroups
@@ -13,6 +14,8 @@
                  ;helm
                  paredit
                  expand-region
+                 flx-ido
+                 projectile
                  flymake)
        :type github
        :pkgname "KusoIDE/kuso_base"

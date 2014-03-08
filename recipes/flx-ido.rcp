@@ -1,0 +1,6 @@
+(:name flx-ido
+       :description "Fuzzy matching for Emacs"
+       :type github
+       :pkgname "lewang/flx"
+       :features (flx flx-ido)
+)

@@ -1,0 +1,9 @@
+(:name rails-mode
+       :depends (projectile rbenv ruby-mode)
+       :type github
+       :pkgname "KusoIDE/rails-mode"
+       :branch "master"
+       :website "https://github.com/KusoIDE/rails-mode"
+       :description "Kuso IDE plugin for ruby on rails development."
+
+)
