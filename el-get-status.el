@@ -48,6 +48,7 @@
       package-name
     (intern (format ":%s" package-name))))
 
+(defvar el-get-package-menu-buffer) ; from el-get-list-packages.el
 (defun el-get-save-package-status (package status &optional recipe)
   "Save given package status"
   (let* ((package (el-get-as-symbol package))
@@ -65,15 +66,29 @@
              (append package-status-alist
                      (list  ; alist of (PACKAGE . PROPERTIES-LIST)
                       (cons package (list 'status status 'recipe recipe)))))
-                (lambda (p1 p2)
-                  (string< (el-get-as-string (car p1))
-                           (el-get-as-string (car p2)))))))
+           (lambda (p1 p2)
+             (string< (el-get-as-string (car p1))
+                      (el-get-as-string (car p2)))))))
     (assert (listp recipe) nil
             "Recipe must be a list")
     (with-temp-file el-get-status-file
       (insert (el-get-print-to-string new-package-status-alist 'pretty)))
     ;; Update cache
     (setq el-get-status-cache new-package-status-alist)
+    ;; Update package menu, if it exists
+    (save-excursion
+      (when (and (bound-and-true-p el-get-package-menu-buffer)
+                 (buffer-live-p el-get-package-menu-buffer)
+                 (set-buffer el-get-package-menu-buffer)
+                 (eq major-mode 'el-get-package-menu-mode))
+        (goto-char (point-min))
+        (let ((inhibit-read-only t)
+              (name (el-get-package-name package)))
+          (when (re-search-forward
+                 (format "^..%s[[:blank:]]+[^[:blank:]]+"
+                         (regexp-quote name)) nil t)
+            (delete-region (match-beginning 0) (match-end 0))
+            (el-get-print-package name status)))))
     ;; Return the new alist
     new-package-status-alist))
 
@@ -160,7 +175,7 @@
   "Return package names that are currently in given status"
   (loop for (p . prop) in package-status-alist
         for s = (plist-get prop 'status)
-	when (member s statuses)
+        when (member s statuses)
         collect (el-get-as-string p)))
 
 (defun el-get-list-package-names-with-status (&rest statuses)
@@ -187,10 +202,10 @@
 (defun el-get-extra-packages (&rest packages)
   "Return installed or required packages that are not in given package list"
   (let ((packages
-	 ;; &rest could contain both symbols and lists
-	 (loop for p in packages
-	       when (listp p) append (mapcar 'el-get-as-symbol p)
-	       else collect (el-get-as-symbol p))))
+         ;; &rest could contain both symbols and lists
+         (loop for p in packages
+               when (listp p) append (mapcar 'el-get-as-symbol p)
+               else collect (el-get-as-symbol p))))
     (when packages
       (loop for (p . prop) in (el-get-read-status-file)
             for s = (plist-get prop 'status)
