@@ -10,6 +10,7 @@
                        dash
                        js2-refactor
                        ;tern
+                       js3-mode
                        js2-refactor
                        sass-mode
                        web-mode
