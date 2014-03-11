@@ -9,6 +9,8 @@
                  ;yari
                  ;rdebug
                  ruby-electric
+                 robe-mode
+                 bundler
                  feature-mode
                  rspec-mode
                  rbenv
