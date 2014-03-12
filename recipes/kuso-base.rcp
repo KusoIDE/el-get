@@ -1,5 +1,6 @@
 (:name kuso-base
        :depends (auto-complete-yasnippet
+                 powerline
                  smex
                  color-theme
                  color-theme-monokai
