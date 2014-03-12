@@ -2,4 +2,5 @@
        :website "https://github.com/sabof/es-windows"
        :description "Window-management utilities"
        :type github
+       :url-type git
        :pkgname "sabof/es-windows")

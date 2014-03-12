@@ -2,4 +2,5 @@
        :website "https://github.com/sabof/es-lib"
        :description "A collecton of emacs utilities"
        :type github
+       :url-type git
        :pkgname "sabof/es-lib")

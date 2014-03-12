@@ -2,6 +2,7 @@
        :website "https://github.com/sabof/project-explorer"
        :description "A project explorer sidebar"
        :type github
-       :depends (es-lib)
+       :depends (es-lib es-windows)
        :features project-explorer
+       :url-type git
        :pkgname "sabof/project-explorer")

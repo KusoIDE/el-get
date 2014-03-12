@@ -1,5 +1,6 @@
 (:name bundler
        :description "Interact with Bundler from Emacs"
        :website "https://github.com/tobiassvn/bundler.el"
+       :url-type git
        :type github
        :pkgname "tobiassvn/bundler.el")

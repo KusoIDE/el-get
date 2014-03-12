@@ -2,4 +2,5 @@
        :type github
        :description "Helpers for easily building flymake checkers"
        :pkgname "purcell/flymake-easy"
+       :url-type git
        :website "http://github.com/purcell/flymake-easy")

@@ -1,14 +1,11 @@
 (:name kuso-ruby
        :depends (rbenv
                  ruby-mode
-                 highlight-indentation
                  inf-ruby
                  flymake-easy
                  flymake-ruby
                  flycheck
                  ;rinari
-                 es-lib
-                 es-windows
                  rhtml-mode
                  yaml-mode
                  haml-mode

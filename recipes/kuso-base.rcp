@@ -6,17 +6,20 @@
                  color-theme-monokai
                  hl-line+
                  ac-dabbrev
-                 workgroups
+                 es-lib
+                 es-windows
+
+                 highlight-indentation
+                 ;workgroups
                  hideshow-org
                  auto-pair-plus
                  dired+
                  multiple-cursors
-                 sr-speedbar
                  ;helm
-                 paredit
                  expand-region
                  flx-ido
                  projectile
+                 project-explorer
                  flymake)
        :type github
        :pkgname "KusoIDE/kuso_base"

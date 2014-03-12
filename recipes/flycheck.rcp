@@ -4,4 +4,5 @@
        :description "On-the-fly syntax checking extension"
        :build '(("makeinfo" "-o" "doc/flycheck.info" "doc/flycheck.texi"))
        :info "./doc"
+       :url-type git
        :depends (s dash cl-lib f pkg-info))
