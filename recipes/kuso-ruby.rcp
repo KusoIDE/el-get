@@ -12,7 +12,7 @@
                  ;yari
                  ;rdebug
                  ruby-electric
-                 robe-mode
+                 ;robe-mode
                  bundler
                  feature-mode
                  rspec-mode
