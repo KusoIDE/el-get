@@ -4,12 +4,13 @@
                  smex
                  color-theme
                  color-theme-monokai
-                 hl-line+
+                 ;hl-line+
                  ac-dabbrev
+                 indent-guide
                  es-lib
                  es-windows
-
-                 highlight-indentation
+                 ido-vertical-mode
+                 ;highlight-indentation
                  ;workgroups
                  hideshow-org
                  auto-pair-plus

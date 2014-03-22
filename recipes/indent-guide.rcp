@@ -1,0 +1,6 @@
+(:name indent-guide
+       :description "Indent guide for eslip"
+       :type github
+       :url-type git
+       :feature indent-guide
+       :pkgname "zk-phi/indent-guide")

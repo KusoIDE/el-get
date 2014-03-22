@@ -1,3 +1,4 @@
+
 (:name ido-vertical-mode
        :type github
        :pkgname "rson/ido-vertical-mode.el"

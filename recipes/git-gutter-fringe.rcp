@@ -2,4 +2,5 @@
        :type github
        :pkgname "syohex/emacs-git-gutter-fringe"
        :description "Fringe version of git-gutter.el"
+       :url-type git
        :depends (git-gutter fringe-helper))

@@ -4,13 +4,14 @@
                        auto-complete-css
                        coffee-mode
                        flymake-coffee
+                       yasnippet
                        scss-mode
                        handlebars-mode
                        s
                        dash
                        js2-refactor
                        ;tern
-                       js3-mode
+                       ;js3-mode
                        js2-refactor
                        sass-mode
                        web-mode
