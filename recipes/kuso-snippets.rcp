@@ -1,0 +1,9 @@
+(:name kuso-snippets
+       :depends (yasnippet)
+       :type github
+       :pkgname "KusoIDE/kuso_snippets"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :url-type git
+       :description "Kuso IDE snippets plugin."
+       )

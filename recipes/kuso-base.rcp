@@ -20,6 +20,7 @@
                  expand-region
                  flx-ido
                  projectile
+                 kuso-snippets
                  project-explorer
                  flymake)
        :type github
