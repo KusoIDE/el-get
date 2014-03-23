@@ -829,21 +829,8 @@ itself.")
   (when (or no-prompt
             (yes-or-no-p
              "Do you really want to update all installed packages? "))
-    ;; The let and flet forms here ensure that
-    ;; `package-refresh-contents' is only called once, regardless of
-    ;; how many ELPA-type packages need to be installed. Without this,
-    ;; a refresh would happen for every ELPA package, which is totally
-    ;; unnecessary when updating them all at once.
-    (let ((refreshed nil)
-          (orig-package-refresh-contents
-           (ignore-errors (symbol-function 'package-refresh-contents))))
-      (flet ((package-refresh-contents
-              (&rest args)
-              (unless refreshed
-                (apply orig-package-refresh-contents args)
-                (setq refreshed t))))
-        ;; This is the only line that really matters
-        (mapc 'el-get-update (el-get-list-package-names-with-status "installed"))))))
+    (let ((el-get-elpa-do-refresh 'once))
+      (mapc 'el-get-update (el-get-list-package-names-with-status "installed")))))
 
 ;;;###autoload
 (defun el-get-update-packages-of-type (type)
@@ -963,7 +950,7 @@ explicitly declared in the user-init-file (.emacs)."
   "Loop over `el-get-sources' and write a recipe file for each
 entry which is not a symbol and is not already a known recipe."
   (interactive "Dsave recipes in directory: ")
-  (let* ((all (mapcar 'el-get-source-name (el-get-read-all-recipes)))
+  (let* ((all (mapcar 'el-get-source-name (el-get-read-all-recipe-files)))
          (new (loop for r in el-get-sources
                     when (and (not (symbolp r))
                               (not (member (el-get-source-name r) all)))

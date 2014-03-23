@@ -102,7 +102,9 @@ the recipe, then return nil."
             (elpa-new-repo
              (condition-case-unless-debug nil
                  (package--download-one-archive elpa-new-repo "archive-contents")
-               (error (message "Failed to download `%s' archive." (car archive))))
+               (error (message "Failed to download `archive-contents' for `%s' from `%s'."
+                               (car elpa-new-repo)
+                               (cdr elpa-new-repo))))
              (package-read-all-archive-contents)))
       ;; TODO: should we refresh and retry once if package-install fails?
       ;; package-install generates autoloads, byte compiles
@@ -124,13 +126,30 @@ the recipe, then return nil."
             #'package-desc-vers))
          (installed-version
           (funcall pkg-version (cdr (assq package package-alist))))
-         (available-version
-          (funcall pkg-version (cdr (assq package package-archive-contents)))))
-    (version-list-< installed-version available-version)))
+         (available-package (cdr (assq package package-archive-contents))))
+    (when available-package
+      ;; `available-package' can be empty in Emacs > 24.3 when it is
+      ;; already installed and the version is the same as the latest
+      ;; one available.  For discussion see also:
+      ;; https://github.com/dimitri/el-get/issues/1637
+      (version-list-< installed-version
+                      (funcall pkg-version available-package)))))
+
+(defvar el-get-elpa-do-refresh t
+  "Whether to call `package-refresh-contents' during `el-get-elpa-update'.
+
+Let-bind this variable to `once' around many `el-get-elpa-update'
+calls to ensure `package-refresh-contents' is only called the
+first time.")
 
 (defun el-get-elpa-update (package url post-update-fun)
   "Ask elpa to update given PACKAGE."
-  (package-refresh-contents)
+  (unless package--initialized
+    (package-initialize t))
+  (when el-get-elpa-do-refresh
+   (package-refresh-contents)
+   (when (eq el-get-elpa-do-refresh 'once)
+     (setq el-get-elpa-do-refresh nil)))
   (when (el-get-elpa-update-available-p package)
     (el-get-elpa-remove package url nil)
     (package-install (el-get-as-symbol package)))
