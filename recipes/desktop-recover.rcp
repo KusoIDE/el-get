@@ -1,0 +1,5 @@
+(:name desktop-recover
+       :website "https://github.com/doomvox/desktop-recover"
+       :description "Emacs lisp packages to use desktop.el for crash recovery"
+       :type github
+       :pkgname "doomvox/desktop-recover")
