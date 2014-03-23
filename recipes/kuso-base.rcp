@@ -4,13 +4,11 @@
                  smex
                  color-theme
                  color-theme-monokai
-                 ;hl-line+
                  ac-dabbrev
                  indent-guide
                  es-lib
                  es-windows
                  ido-vertical-mode
-                 ;highlight-indentation
                  ;workgroups
                  hideshow-org
                  auto-pair-plus
@@ -22,6 +20,7 @@
                  projectile
                  kuso-snippets
                  project-explorer
+                 git-gutter-fringe
                  flymake)
        :type github
        :pkgname "KusoIDE/kuso_base"
