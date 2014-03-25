@@ -8,6 +8,7 @@
                  project-explorer
                  git-gutter-fringe
                  magit
+                 git-commit-mode
                  kuso-base
                  flycheck)
        :type github
@@ -15,6 +16,7 @@
        :branch "master"
        :website "http://kuso.lxsameer.com"
        :description "Basic features needed for programming on kuso"
+       :url-type git
        :after (progn
                 (let (init-file)
                   (setq init-file (concat default-directory "kuso-programming.el"))

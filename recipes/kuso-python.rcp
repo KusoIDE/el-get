@@ -2,8 +2,7 @@
        :depends (python-mode
                  jedi
                  kuso-web
-                 git-commit-mode
-                 magit)
+                 kuso-programming)
        :type github
        :pkgname "KusoIDE/kuso_python"
        :branch "master"

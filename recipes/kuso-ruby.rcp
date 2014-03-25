@@ -2,9 +2,9 @@
        :depends (rbenv
                  ruby-mode
                  inf-ruby
-                 flymake-easy
-                 flymake-ruby
-                 flycheck
+                 ;flymake-easy
+                 ;flymake-ruby
+                 ;flycheck
                  ;rinari
                  rhtml-mode
                  yaml-mode
@@ -17,8 +17,9 @@
                  feature-mode
                  rspec-mode
                  rails-mode
-                 git-commit-mode
-                 magit
+                 ;git-commit-mode
+                                        ;magit
+                 kuso-programming
                  kuso-web)
        :type github
        :pkgname "KusoIDE/kuso_ruby"
