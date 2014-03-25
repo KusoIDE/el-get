@@ -1,0 +1,22 @@
+(:name kuso-programming
+       :depends (auto-complete-yasnippet
+                 indent-guide
+                 auto-pair-plus
+                 projectile
+                 project-explorer
+                 git-gutter-fringe
+                 magit
+                 kuso-base
+                 flycheck)
+       :type github
+       :pkgname "KusoIDE/kuso_programming"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :description "Basic features needed for programming on kuso"
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso-programming.el"))
+                  (load-file init-file)
+                  )
+                )
+       )

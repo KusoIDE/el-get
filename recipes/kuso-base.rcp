@@ -1,32 +1,26 @@
 (:name kuso-base
-       :depends (auto-complete-yasnippet
-                 powerline
+       :depends (powerline
                  smex
                  color-theme
                  color-theme-monokai
+                 ;hl-line+
                  ac-dabbrev
-                 indent-guide
                  es-lib
                  es-windows
                  ido-vertical-mode
+                 ;highlight-indentation
                  ;workgroups
                  hideshow-org
-                 auto-pair-plus
                  dired+
                  multiple-cursors
                  ;helm
                  expand-region
-                 flx-ido
-                 projectile
-                 kuso-snippets
-                 project-explorer
-                 git-gutter-fringe
-                 flymake)
+                 flx-ido)
        :type github
        :pkgname "KusoIDE/kuso_base"
        :branch "master"
        :website "http://kuso.lxsameer.com"
-       :description "Kuso IDE base plugin."
+       :description "Kuso Base plugin"
        :after (progn
                 (let (init-file)
                   (setq init-file (concat default-directory "kuso-base.el"))
