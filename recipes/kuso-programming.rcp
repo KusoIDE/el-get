@@ -1,7 +1,9 @@
 (:name kuso-programming
-       :depends (auto-complete-yasnippet
+       :depends (auto-complete
+                 auto-complete-yasnippet
                  indent-guide
                  auto-pair-plus
+                 ac-dabbrev
                  projectile
                  project-explorer
                  git-gutter-fringe

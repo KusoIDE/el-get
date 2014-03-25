@@ -4,7 +4,6 @@
                  color-theme
                  color-theme-monokai
                  ;hl-line+
-                 ac-dabbrev
                  es-lib
                  es-windows
                  ido-vertical-mode
