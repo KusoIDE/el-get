@@ -9,6 +9,7 @@
                  git-gutter-fringe
                  magit
                  git-commit-mode
+                 flyspell
                  kuso-base
                  flycheck)
        :type github
