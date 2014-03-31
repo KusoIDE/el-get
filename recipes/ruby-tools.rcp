@@ -1,0 +1,9 @@
+(:name ruby-tools
+       :depends (ruby-mode)
+       :type github
+       :pkgname "rejeep/ruby-tools.el"
+       :branch "master"
+       :after (progn
+                (add-hook 'ruby-mode-hook 'ruby-tools-mode)
+                )
+       )
