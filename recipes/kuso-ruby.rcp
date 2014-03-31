@@ -3,7 +3,6 @@
                  ruby-mode
                  inf-ruby
                  ruby-tools
-                 rhtml-mode
                  yaml-mode
                  haml-mode
                  ruby-electric
