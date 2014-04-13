@@ -11,7 +11,6 @@
                  rspec-mode
                  rails-mode
                  kuso-programming
-                 ruby-compilation
                  kuso-web)
        :type github
        :pkgname "KusoIDE/kuso_ruby"

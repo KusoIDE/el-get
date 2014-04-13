@@ -3,6 +3,7 @@
        :type github
        :pkgname "rejeep/ruby-tools.el"
        :branch "master"
+       :url-type git
        :after (progn
                 (add-hook 'ruby-mode-hook 'ruby-tools-mode)
                 )
