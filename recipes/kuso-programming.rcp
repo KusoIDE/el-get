@@ -6,7 +6,8 @@
                  ac-dabbrev
                  projectile
                  project-explorer
-                 git-gutter-fringe
+                 ;git-gutter-fringe
+                 diff-hl
                  magit
                  git-commit-mode
                  flyspell
