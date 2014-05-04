@@ -1,0 +1,7 @@
+(:name org-trello
+       :depends (org-mode request elnode esxml)
+       :type github
+       :pkgname "org-trello/org-trello"
+       :branch "master"
+       :website "http://org-trello.github.io"
+       :description "2 way sync for org-mode and trello")

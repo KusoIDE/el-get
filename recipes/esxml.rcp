@@ -1,0 +1,6 @@
+(:name esxml
+       :type github
+       :pkgname "tali713/esxml"
+       :branch "master"
+       :website "https://github.com/tali713/esxml"
+       :description "An elisp library for working with xml, esxml and sxml.")
