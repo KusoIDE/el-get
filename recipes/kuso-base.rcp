@@ -2,6 +2,7 @@
        :depends (powerline
                  smex
                  color-theme
+                 key-chord
                  color-theme-monokai
                  ;hl-line+
                  es-lib

@@ -4,6 +4,7 @@
        :pkgname "aemoncannon/ensime"
        :build '(("sbt" "update" "stage"))
        :load-path ("./dist/elisp")
+       :url-type git
        :post-init (progn
                     (autoload 'ensime-scala-mode-hook "ensime")
                     (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)))
