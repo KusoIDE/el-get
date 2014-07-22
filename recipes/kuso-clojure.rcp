@@ -1,7 +1,7 @@
 (:name kuso-clojure
        :depends (kuso-programming)
        :type github
-       :pkgname "KusoIDE/kuso-ruby"
+       :pkgname "KusoIDE/kuso-clojure"
        :branch "master"
        :website "http://kuso.lxsameer.com"
        :description "Kuso IDE Clojure support plugin."
