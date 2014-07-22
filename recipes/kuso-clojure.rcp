@@ -1,5 +1,7 @@
 (:name kuso-clojure
-       :depends (kuso-programming)
+       :depends (kuso-programming
+                 paredit
+                 )
        :type github
        :pkgname "KusoIDE/kuso-clojure"
        :branch "master"
