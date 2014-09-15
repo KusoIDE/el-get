@@ -1,6 +1,8 @@
 (:name kuso-clojure
        :depends (kuso-programming
                  paredit
+                 clojure-mode
+                 cider
                  )
        :type github
        :pkgname "KusoIDE/kuso-clojure"

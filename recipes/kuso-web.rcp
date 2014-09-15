@@ -1,19 +1,18 @@
 (:name kuso-web
-       :depends (emmet js2-mode css-mode
-                       auto-complete-css
-                       coffee-mode
-                       yasnippet
-                       rainbow-mode
-                       kuso-programming
-                       scss-mode
-                       handlebars-mode
-                       s
-                       dash
-                       js2-refactor
-                       js2-refactor
-                       sass-mode
-                       web-mode
-                       )
+       :depends (emmet
+                 js2-mode css-mode
+                 auto-complete-css
+                 coffee-mode
+                 yasnippet
+                 rainbow-mode
+                 kuso-programming
+                 scss-mode
+                 handlebars-mode
+                 s
+                 dash
+                 js2-refactor
+                 sass-mode
+                 web-mode)
 
        :type github
        :pkgname "KusoIDE/kuso_web"
