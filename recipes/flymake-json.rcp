@@ -1,0 +1,9 @@
+(:name flymake-json
+       :depends (flymake)
+       :type github
+       :pkgname "purcell/flymake-json"
+       :branch "master"
+       :description "Emacs flymake handler for json using jsonlint"
+       :post-init (add-hook 'js-mode-hook 'flymake-json-maybe-load)
+
+       )

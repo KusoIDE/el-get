@@ -1,8 +1,9 @@
 (:name kuso-web
        :depends (emmet
-                 js2-mode css-mode
+                 js2-mode
+                 css-mode
                  auto-complete-css
-                 coffee-mode
+                 ;;coffee-mode
                  yasnippet
                  rainbow-mode
                  kuso-programming
@@ -12,6 +13,7 @@
                  dash
                  js2-refactor
                  sass-mode
+                 flymake-sass
                  web-mode)
 
        :type github
