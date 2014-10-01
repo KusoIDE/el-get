@@ -1,0 +1,4 @@
+(:name kanban
+       :type hg
+       :url "https://bitbucket.org/ArneBab/kanban.el"
+       :description "Kanban board for Emacs")
