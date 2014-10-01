@@ -10,4 +10,7 @@
          (autoload 'os-import "os"
            "Import information to sync with org-mode from different online services" t)
          (autoload 'os-sync "os"
-           "Sync current org-mode file with service it is bound to" t)))
+           "Sync current org-mode file with service it is bound to" t)
+
+         (autoload 'os-github "os-github-backend"
+           "Sync with github" t)))
