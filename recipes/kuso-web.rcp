@@ -3,7 +3,7 @@
                  js2-mode
                  css-mode
                  auto-complete-css
-                 ;;coffee-mode
+                 coffee-mode
                  yasnippet
                  rainbow-mode
                  kuso-programming

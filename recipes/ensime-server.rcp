@@ -1,0 +1,8 @@
+(:name ensime-server
+       :description "ENhanced Scala Interaction Mode for Emacs (Server application)"
+       :type github
+       :pkgname "ensime/ensime-server"
+       :build '(
+                ("sbt" "publishLocal")
+                ("rm" "-rf" "~/.ivy2/cache/org.ensime"))
+       :url-type git)
