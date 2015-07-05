@@ -1,0 +1,13 @@
+(:name ensime-emacs
+       :depends (scala-mode2
+                 s
+                 dash
+                 popup
+                 auto-complete
+                 ensime-server)
+       :description "ENhanced Scala Interaction Mode for Emacs (Emacs plugin)"
+       :type github
+       :pkgname "ensime/ensime-emacs"
+       :url-type git
+       :post-init (progn
+                    (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)))

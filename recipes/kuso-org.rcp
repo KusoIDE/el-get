@@ -1,0 +1,16 @@
+(:name kuso-org
+       :depends (org-mode
+                 kanban
+                 org-sync)
+       :type github
+       :pkgname "KusoIDE/kuso_org"
+       :branch "master"
+       :website "http://kuso.lxsameer.com"
+       :description "Kuso IDE plugin to organize your things thanks to org-mode."
+       :after (progn
+                (let (init-file)
+                  (setq init-file (concat default-directory "kuso-org.el"))
+                  (load-file init-file)
+                  )
+                )
+       )
