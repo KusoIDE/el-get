@@ -15,6 +15,9 @@
 (require 'cl)                           ; yes I like loop
 (require 'bytecomp)
 
+(declare-function el-get-build-commands "el-get-build" (package))
+(declare-function el-get-read-package-with-status "el-get-status" (action &rest statuses))
+
 ;; byte-recompile-file:
 ;;
 ;;  - in Emacs23 will not recompile a file when the source is newer than the
@@ -27,16 +30,21 @@
 ;;    has never been compiled before.
 ;;
 ;; so we just define our own
-(defun el-get-byte-compile-file (el)
+(defun el-get-byte-compile-file (el &optional warnings)
   "Byte compile the EL file, and skips unnecessary compilation.
 
 Specifically, if the compiled elc file already exists and is
 newer, then compilation is skipped."
   (let ((elc (concat (file-name-sans-extension el) ".elc"))
+        (byte-compile-warnings warnings)
         ;; Byte-compile runs emacs-lisp-mode-hook; disable it
-        emacs-lisp-mode-hook byte-compile-warnings)
+        emacs-lisp-mode-hook)
     (when (or (not (file-exists-p elc))
               (not (file-newer-than-file-p elc el)))
+      (when (file-exists-p elc)
+        ;; Delete the old elc to make sure that if the compilation fails to
+        ;; generate a new one, there will be no discrepancy between them.
+        (delete-file elc))
       (condition-case err
           (byte-compile-file el)
         ((debug error) ;; catch-all, allow for debugging
@@ -102,7 +110,7 @@ With optional arg RECURSIVE, do so in all subdirectories as well."
                   (not (file-newer-than-file-p elc el)))
           do (progn
                (message "el-get-byte-compile: Cleaning stale compiled file %s" elc)
-               (delete-file elc nil)))
+               (delete-file elc)))
     ;; Process subdirectories recursively
     (when recursive
       (loop for dir in (directory-files dir 'full)
@@ -132,9 +140,13 @@ whose value is a directory to be cleared of stale elc files."
   (assert noninteractive nil
           "`el-get-byte-compile-from-stdin' is to be used only with -batch")
   (let* ((input-data (read-minibuffer ""))
-         (load-path (append (plist-get input-data :load-path) load-path))
          (files (plist-get input-data :compile-files))
+         (input-load-path (plist-get input-data :load-path))
          (dir-to-clean (plist-get input-data :clean-directory)))
+    ;; Use setq so that `load-path' stays updated until
+    ;; shutdown. Certain packages (eg w3m) might install shutdown
+    ;; hooks during compilation.
+    (setq load-path (append input-load-path load-path))
     (unless (or dir-to-clean files)
       (warn "Did not get a list of files to byte-compile or a directory to clean. The input may have been corrupted."))
     (when dir-to-clean

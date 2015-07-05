@@ -1,4 +1,4 @@
-;;; el-get-install.el --- installer for the lazy
+;;; el-get-install.el --- installer for the lazy -*- no-byte-compile: t -*-
 ;;
 ;; Copyright (C) 2010 Dimitri Fontaine
 ;;
@@ -35,7 +35,7 @@
            (git       (or (executable-find "git")
                           (error "Unable to find `git'")))
            (url       (or (bound-and-true-p el-get-git-install-url)
-                          "http://github.com/dimitri/el-get.git"))
+                          "https://github.com/dimitri/el-get.git"))
            (default-directory el-get-root)
            (process-connection-type nil)   ; pipe, no pty (--no-progress)
 
@@ -71,12 +71,15 @@
           (error "Couldn't `git checkout -t %s`" branch)))
 
       (add-to-list 'load-path pdir)
+      (add-to-list 'load-path el-get-root)
       (load package)
       (let ((el-get-default-process-sync t) ; force sync operations for installer
             (el-get-verbose t))             ; let's see it all
         (el-get-post-install "el-get"))
       (unless (boundp 'el-get-install-skip-emacswiki-recipes)
-        (el-get-emacswiki-build-local-recipes))
+        (condition-case err
+            (el-get-emacswiki-build-local-recipes)
+          (error (display-warning 'el-get (error-message-string err)))))
       (with-current-buffer buf
         (goto-char (point-max))
         (insert "\nCongrats, el-get is installed and ready to serve!")))))

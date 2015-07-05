@@ -24,6 +24,9 @@
 (require 'bytecomp)
 (require 'autoload)
 
+(declare-function el-get-package-def "el-get-recipes" (package))
+(declare-function el-get-installation-failed "el-get" (package signal-data))
+
 (defun el-get-print-to-string (object &optional pretty)
   "Return string representation of lisp object.
 
@@ -37,6 +40,17 @@ the original object."
 
 (defun el-get-verbose-message (format &rest arguments)
   (when el-get-verbose (apply 'message format arguments)))
+
+(defmacro el-get-with-errors-as-warnings (prefix &rest body)
+  (declare (indent 1) (debug t))
+  (let ((error-var (make-symbol "err")))
+    `(condition-case ,error-var
+         (progn ,@body)
+       ((debug error)
+        (display-warning 'el-get
+                         (concat ,prefix (error-message-string ,error-var))
+                         :error)
+        nil))))
 
 (defsubst el-get-plist-keys (plist)
   "Return a list of all keys in PLIST.
@@ -181,6 +195,27 @@ entry."
     (when post-remove-fun
       (funcall post-remove-fun package))))
 
+(defconst el-get-no-shell-quote "\\`[-,./_[:alnum:]]+\\'"
+  "Regular expression matching arguments that don't shell quoting.")
+
+(defun el-get-shell-quote-program (program-name)
+  "Like `shell-quote-argument' but needs special treatment on Windows."
+  (or (when (string-match-p el-get-no-shell-quote program-name) program-name)
+      (when (fboundp 'w32-short-file-name)
+        ;; If program is really a bat file, putting double quotes around
+        ;; it will lead to problems if subsequent arguments are also
+        ;; quoted. Use the short 8.3 name instead of quoting. See
+        ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18745 for
+        ;; details.
+        (let (exe (executable-find program-name))
+          (when exe (w32-short-file-name exe))))
+      (shell-quote-argument program-name)))
+
+(defun el-get-maybe-shell-quote-argument (arg)
+  "`shell-quote-argument', if necessary."
+  (if (string-match-p el-get-no-shell-quote arg) arg
+    (shell-quote-argument arg)))
+
 
 ;;
 ;; Some tools
@@ -251,24 +286,34 @@ directory or a symlink in el-get-dir."
     (or (file-directory-p pdir)
         (file-symlink-p   pdir))))
 
+(defun el-get-url-host (url)
+  "Extract host from given URL.
+
+Earlier we used the built-in library `url-parse' to extract host. This broke
+installation of CEDET since it requires that the built-in versions of certain
+packages (one of them is `eieio') are not loaded before loading it. However
+`url-parse' depends on `auth-source' which in turn depends on `eieio' leading to
+loading of `eieio' before initializing CEDET causing CEDET's initialization to
+fail."
+  (string-match "://\\([^/:]+\\)" url)
+  (match-string-no-properties 1 url))
+
 
 ;;
 ;; el-get-reload API functions
 ;;
-(defun el-get-package-files (package)
-  "Return a list of files loaded from PACKAGE's directory."
-  (loop with pdir = (file-truename (el-get-package-directory package))
-        with regexp = (format "^%s" (regexp-quote (file-name-as-directory (expand-file-name pdir))))
+(defun el-get-package-files (pdir)
+  "Return a list of files loaded from directory PDIR."
+  (loop with regexp = (format "^%s" (regexp-quote (file-name-as-directory (file-truename pdir))))
         for (f . nil) in load-history
         when (and (stringp f) (string-match-p regexp (file-truename f)))
         collect (if (string-match-p "\\.elc?$" f)
                     (file-name-sans-extension f)
                   f)))
 
-(defun el-get-package-features (package)
-  "Return a list of features provided by files in PACKAGE."
-  (loop with pdir = (file-truename (el-get-package-directory package))
-        with regexp = (format "^%s" (regexp-quote (file-name-as-directory (expand-file-name pdir))))
+(defun el-get-package-features (pdir)
+  "Return a list of features provided by files in PDIR."
+  (loop with regexp = (format "^%s" (regexp-quote (file-name-as-directory (expand-file-name pdir))))
         for (f . l) in load-history
         when (and (stringp f) (string-match-p regexp (file-truename f)))
         nconc (loop for i in l
@@ -385,10 +430,12 @@ makes it easier to conditionally splice a command into the list.
                  (cbuf    (plist-get c :buffer-name))
                  (killed  (when (get-buffer cbuf) (kill-buffer cbuf)))
                  (filter  (plist-get c :process-filter))
-                 (program (plist-get c :program))
                  (shell   (plist-get c :shell))
+                 (program (if shell
+                              (el-get-shell-quote-program (plist-get c :program))
+                            (plist-get c :program)))
                  (args    (if shell
-                              (mapcar #'shell-quote-argument (plist-get c :args))
+                              (mapcar #'el-get-maybe-shell-quote-argument (plist-get c :args))
                             (plist-get c :args)))
                  (sync    (el-get-plist-get-with-default c :sync
                             el-get-default-process-sync))

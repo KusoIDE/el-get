@@ -25,6 +25,7 @@
          (pdir  (el-get-package-directory package))
          (pname (el-get-as-string package))
          (name  (format "*hg clone %s*" package))
+         (source (el-get-package-def package))
          (branch   (plist-get source :branch))
          (checkout (or (plist-get source :checkout)
                        (plist-get source :checksum)
@@ -34,6 +35,7 @@
                              (list url pname)))
          (ok    (format "Package %s installed." package))
          (ko    (format "Could not install package %s." package)))
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -51,12 +53,14 @@
   (let* ((hg-executable (el-get-executable-find "hg"))
          (pdir (el-get-package-directory package))
          (name (format "*hg pull %s*" package))
+         (source (el-get-package-def package))
          ;; Don't put :branch here, because by default `hg update'
          ;; updates to tip of current branch.
          (checkout (or (plist-get source :checkout)
                        (plist-get source :checksum)))
          (ok   (format "Pulled package %s." package))
          (ko   (format "Could not update package %s." package)))
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -91,7 +95,7 @@
   :install #'el-get-hg-clone
   :update #'el-get-hg-pull
   :remove #'el-get-rmdir
-  :install-hook #'el-get-hg-clone-hook
+  :install-hook 'el-get-hg-clone-hook
   :compute-checksum #'el-get-hg-compute-checksum)
 
 (provide 'el-get-hg)

@@ -14,6 +14,10 @@
 
 (require 'el-get-core)
 (require 'el-get-byte-compile)
+(require 'el-get-recipes)
+
+(declare-function info-initialize "info" nil)
+(defvar Info-directory-list)
 
 ;; debian uses ginstall-info and it's compatible to fink's install-info on
 ;; MacOSX, so:
@@ -64,7 +68,8 @@ absolute filename obtained with expand-file-name is executable."
   (let ((fullname (expand-file-name name))
         (exe      (executable-find name)))
     (cond ((string-match "^\./" name)   name)
-          ((file-executable-p fullname) fullname)
+          ((and (file-regular-p fullname)
+                (file-executable-p fullname)) fullname)
           (t (or exe name)))))
 
 (defun el-get-build
@@ -123,15 +128,6 @@ recursion.
                                       :error ,(format
                                                "el-get could not build %s [%s]" package c))))
                   commands))
-         ;; This ensures that post-build-fun is always a lambda, not a
-         ;; symbol, which simplifies the following code.
-         (post-build-fun
-          (cond ((null post-build-fun) (lambda (&rest args) nil))
-                ((symbolp post-build-fun)
-                 `(lambda (&rest args)
-                    (apply ,(symbol-function post-build-fun) args)))
-                (t (assert (functionp post-build-fun) 'show-args)
-                   post-build-fun)))
          ;; Do byte-compilation after building, if needed
          (byte-compile-then-post-build-fun
           `(lambda (package)
@@ -144,7 +140,7 @@ recursion.
                (el-get-start-process-list
                 package
                 (list (el-get-byte-compile-process package ,buf ,wdir ,sync bytecomp-files))
-                ,post-build-fun))))
+                #',post-build-fun))))
          ;; unless installing-info, post-build-fun should take care of
          ;; building info too
          (build-info-then-post-build-fun

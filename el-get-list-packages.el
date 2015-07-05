@@ -19,6 +19,12 @@
 (require 'el-get-core)
 (require 'cl)
 
+(declare-function el-get-install "el-get" (package))
+(declare-function el-get-remove "el-get" (package))
+(declare-function el-get-update "el-get" (package))
+(declare-function el-get-read-package-name "el-get" (action &optional filtered))
+(declare-function el-get-read-package-status "el-get-status" (package &optional package-status-alist))
+
 (defvar el-get-package-menu-buffer nil
   "Global var holding pointing to the package menu buffer, so
   that it can be updated from `el-get-save-package-status'")
@@ -160,7 +166,7 @@ matching REGEX with TYPE and ARGS as parameter."
         (el-get-describe-princ-button (format " in `%s':\n" file)
                                       "`\\([^`']+\\)"
                                       'el-get-help-package-def package)))
-    (princ (el-get-print-to-string def))))
+    (el-get-recipe-pprint def)))
 
 (defun el-get-describe (package &optional interactive-p)
   "Generate a description for PACKAGE."
@@ -174,9 +180,8 @@ matching REGEX with TYPE and ARGS as parameter."
                      interactive-p)
     (save-excursion
       (with-help-window (help-buffer)
-        (el-get-describe-1 package)
         (with-current-buffer standard-output
-          (buffer-string))))))
+          (el-get-describe-1 package))))))
 
 (defcustom el-get-package-menu-view-recipe-function
   'find-file-other-window
@@ -343,8 +348,8 @@ in el-get package menu."
     (insert status)
     (put-text-property (line-beginning-position) (line-end-position)
                        'font-lock-face face)
+    (indent-to 41 1)
     (when desc
-      (indent-to 41 1)
       (insert (propertize (replace-regexp-in-string "\n" " " desc)
                           'font-lock-face face)
               "\n"))))

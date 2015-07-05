@@ -31,6 +31,7 @@
          (name (format "*go get %s*" package))
          (ok   (format "Package %s installed." package))
          (ko   (format "Could not install package %s." package)))
+    ;; TODO: no idea how to check this for insecure connections
     (unless (file-directory-p pdir)
       (make-directory pdir))
     (setenv "GOPATH" pdir)
@@ -50,6 +51,6 @@
   :install #'el-get-go-install
   :update #'el-get-go-install
   :remove #'el-get-rmdir
-  :install-hook #'el-get-go-install-hook)
+  :install-hook 'el-get-go-install-hook)
 
 (provide 'el-get-go)

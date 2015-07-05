@@ -21,13 +21,17 @@
 
 (defun el-get-git-svn-clone (package url post-install-fun)
   "Clone the given svn PACKAGE following the URL using git."
-  (let ((git-executable (el-get-executable-find "git"))
-        (pname (el-get-as-string package))
-        (name  (format "*git svn clone %s*" package))
-        (checkout (or (plist-get source :checkout)
-                      (plist-get source :checksum)))
-        (ok    (format "Package %s installed." package))
-        (ko    (format "Could not install package %s." package)))
+  (let* ((git-executable (el-get-executable-find "git"))
+         (pdir   (el-get-package-directory package))
+         (pname  (el-get-as-string package))
+         (name   (format "*git svn clone %s*" package))
+         (source (el-get-package-def package))
+         (checkout (or (plist-get source :checkout)
+                       (plist-get source :checksum)))
+         (ok    (format "Package %s installed." package))
+         (ko    (format "Could not install package %s." package)))
+    ;; TODO: not sure if it's possible for svn:// URLs to use TLS?
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -59,6 +63,7 @@
         (r-name (format "*git svn rebase %s*" package))
         (r-ok   (format "Rebased package %s." package))
         (r-ko   (format "Could not rebase package %s." package)))
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -82,6 +87,6 @@
 (el-get-register-derived-method :git-svn :git
   :install #'el-get-git-svn-clone
   :update #'el-get-git-svn-update
-  :install-hook #'el-get-git-svn-clone-hook)
+  :install-hook 'el-get-git-svn-clone-hook)
 
 (provide 'el-get-git-svn)

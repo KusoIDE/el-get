@@ -4,5 +4,5 @@
        :pkgname "michaelklishin/cucumber.el"
        :url-type "git"
        :features feature-mode
-       :post-init (add-to-list 'auto-mode-alist
-                               '("\\.feature\\'" . feature-mode)))
+       :prepare (add-to-list 'auto-mode-alist
+                             '("\\.feature\\'" . feature-mode)))

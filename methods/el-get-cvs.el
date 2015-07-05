@@ -13,6 +13,7 @@
 ;;     Please see the README.md file from the same distribution
 
 (require 'el-get-core)
+(require 'el-get-recipes)
 
 (defcustom el-get-cvs-checkout-hook nil
   "Hook run after cvs checkout."
@@ -29,7 +30,8 @@ Enable this if you want el-get to honor these settings"
   :type 'boolean
   :group 'el-get)
 
-(defun el-get-parse-proxy ()
+(defvar url-proxy-services)
+(defun el-get-parse-proxy (url)
   "Parse HTTP_PROXY or use `url-proxy-services'"
   (let ((proxy (or (getenv "HTTP_PROXY")
                    (if (and (featurep 'url-vars)
@@ -61,7 +63,7 @@ Enable this if you want el-get to honor these settings"
 
 (defun el-get-cvs-checkout-proxy-url (url)
   "Checkout proxy URL"
-  (let ((proxy (el-get-parse-proxy))
+  (let ((proxy (el-get-parse-proxy url))
         (cvs-proxy "")
         tmp
         (ret url))
@@ -95,6 +97,7 @@ Enable this if you want el-get to honor these settings"
          (ok      (format "Checked out package %s." package))
          (ko      (format "Could not checkout package %s." package)))
 
+    (el-get-insecure-check package url)
     ;; (message "%S" `(:args ("-d" ,url "checkout" "-d" ,package ,module)))
     ;; (message "el-get-cvs-checkout: %S" (string= options "login"))
 
@@ -128,6 +131,7 @@ Enable this if you want el-get to honor these settings"
          (ok   (format "Updated package %s." package))
          (ko   (format "Could not update package %s." package)))
 
+    (el-get-insecure-check package url)
     (el-get-start-process-list
      package
      `((:command-name ,name
@@ -143,6 +147,6 @@ Enable this if you want el-get to honor these settings"
   :install #'el-get-cvs-checkout
   :update #'el-get-cvs-update
   :remove #'el-get-rmdir
-  :install-hook #'el-get-cvs-checkout-hook)
+  :install-hook 'el-get-cvs-checkout-hook)
 
 (provide 'el-get-cvs)

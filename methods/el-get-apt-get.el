@@ -13,6 +13,7 @@
 ;;     Please see the README.md file from the same distribution
 
 (require 'el-get-core)
+(require 'el-get-recipes)
 
 (defcustom el-get-apt-get (executable-find "apt-get")
   "The apt-get executable."
@@ -49,6 +50,9 @@
 ;; get the global value of package, which has been set before calling
 ;; run-hooks.
 ;;
+(defvar el-get-brew-base)
+(defvar el-get-fink-base)
+(defvar el-get-pacman-base)
 (defun el-get-dpkg-symlink (package)
   "ln -s /usr/share/emacs/site-lisp/package ~/.emacs.d/el-get/package"
   (let* ((pdir    (el-get-package-directory package))
@@ -59,13 +63,21 @@
                         ((eq method 'fink)    el-get-fink-base)
                         ((eq method 'pacman)  el-get-pacman-base)))
          (debdir  (concat (file-name-as-directory basedir) pname)))
-    (unless (file-directory-p pdir)
-      (shell-command
-       (concat "cd " el-get-dir " && ln -s " debdir  " " pname)))))
+    (if (file-directory-p debdir)
+        (unless (file-directory-p pdir)
+          (shell-command
+           (concat "cd " el-get-dir " && ln -s " debdir  " " pname)))
+      (unless (file-directory-p pdir)
+       (lwarn '(el-get) :warning
+              "%s package `%s' created no elisp files!" method package)
+       ;; create an empty directory so we have somewhere to run
+       ;; el-get tasks like byte-compile in.
+       (make-directory pdir t)))))
 
 (defun el-get-dpkg-remove-symlink (package)
   "rm -f ~/.emacs.d/el-get/package"
-  (let* ((pdir    (el-get-package-directory package)))
+  (let* ((pdir    (el-get-package-directory package))
+         (pname   (el-get-as-string package)))
     (when (file-symlink-p pdir)
       (let ((command (concat "cd " el-get-dir " && rm -f " pname)))
         (message command)
@@ -154,7 +166,7 @@ password prompt."
   :install #'el-get-apt-get-install
   :update #'el-get-apt-get-install
   :remove #'el-get-apt-get-remove
-  :install-hook #'el-get-apt-get-install-hook
-  :remove-hook #'el-get-apt-get-remove-hook)
+  :install-hook 'el-get-apt-get-install-hook
+  :remove-hook 'el-get-apt-get-remove-hook)
 
 (provide 'el-get-apt-get)

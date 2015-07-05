@@ -13,6 +13,7 @@
 ;;     Please see the README.md file from the same distribution
 
 (require 'el-get-core)
+(require 'el-get-recipes)
 
 (defcustom el-get-svn (executable-find "svn")
   "The svn executable."
@@ -35,6 +36,7 @@
          (name    (format "*svn checkout %s*" package))
          (ok      (format "Checked out package %s." package))
          (ko      (format "Could not checkout package %s." package)))
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -54,6 +56,7 @@
          (name (format "*svn update %s*" package))
          (ok   (format "Updated package %s." package))
          (ko   (format "Could not update package %s." package)))
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -70,6 +73,6 @@
   :install #'el-get-svn-checkout
   :update #'el-get-svn-update
   :remove #'el-get-rmdir
-  :install-hook #'el-get-svn-checkout-hook)
+  :install-hook 'el-get-svn-checkout-hook)
 
 (provide 'el-get-svn)

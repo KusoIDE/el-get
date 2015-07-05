@@ -13,6 +13,7 @@
 ;;     Please see the README.md file from the same distribution
 
 (require 'el-get-core)
+(require 'el-get-recipes)
 
 (defcustom el-get-git-clone-hook nil
   "Hook run after git clone."
@@ -23,6 +24,12 @@
   "If t, then run git-clone with `--depth 1'."
   :group 'el-get
   :type 'boolean)
+
+(defcustom el-get-git-known-smart-domains '("www.github.com" "www.bitbucket.org" "repo.or.cz")
+  "List of domains which are known to support shallow clone, el-get will not make
+explicit checks for these"
+  :group 'el-get
+  :type 'list)
 
 (defun el-get-git-executable ()
   "Return git executable to use, or signal an error when not
@@ -36,6 +43,51 @@ found."
        (concat "el-get-git-clone requires `magit-git-executable' to be set, "
                "or the binary `git' to be found in your PATH")))
     git-executable))
+
+(defun el-get-git-url-from-known-smart-domains-p (url)
+  "Check if URL belongs to known smart domains, it basically looks up the url's
+domain in `el-get-git-known-smart-domains'
+
+This is needed because some domains like bitbucket support shallow clone even
+though they do not indicate this in their response headers see
+`el-get-git-is-host-smart-http-p'"
+  (let* ((host (el-get-url-host url))
+         ;; Prepend www to domain, if it consists only of two components
+         (prefix (when (= (length (split-string host "\\.")) 2)
+                   "www.")))
+    (member (concat prefix host) el-get-git-known-smart-domains)))
+
+(defun el-get-git-is-host-smart-http-p (giturl)
+  "Detect if the host supports shallow clones using http(s). GITURL is url to
+the git repository, this function is intended to be used only with http(s)
+urls. The function uses the approach described here [http://stackoverflow.com/questions/9270488/]
+
+Basically it makes a HEAD request and checks the Content-Type for 'smart' MIME
+type. This approach does not work for some domains like `bitbucket', which do
+not return 'smart' headers despite supporting shallow clones"
+  (let ((url-request-method "HEAD")
+        (req-url (format "%s%s/info/refs\?service\=git-upload-pack"
+                         giturl
+                         ;; The url may not end with ".git" in which case we
+                         ;; need to add append ".git" to the url
+                         (if (string-match "\\.git\\'" giturl)
+                             ""
+                           ".git")))
+        (smart-content-type "Content-Type: application/x-git-upload-pack-advertisement"))
+
+    (with-current-buffer (url-retrieve-synchronously req-url)
+      (goto-char (point-min))
+      (numberp (ignore-errors (search-forward-regexp smart-content-type))))))
+
+(defun el-get-git-shallow-clone-supported-p (url)
+  "Check if shallow clone is supported for given URL"
+  ;; All other protocols git, ssh and file support shallow clones
+  (or (not (string-prefix-p "http" url))
+      ;; Check if url belongs to one of known smart domains
+      (el-get-git-url-from-known-smart-domains-p url)
+      ;; If all else fails make an explicit call to check if shallow clone is
+      ;; supported
+      (el-get-git-is-host-smart-http-p url)))
 
 (defun el-get-git-clone (package url post-install-fun)
   "Clone the given package following the URL."
@@ -51,10 +103,7 @@ found."
                                     (not submodule-prop)))
          (checkout (or (plist-get source :checkout)
                        (plist-get source :checksum)))
-         ;; http may a be a dumb server, not supporting shallow clones
-         ;; it's not the case of github
-         (shallow (unless (and (string-prefix-p "http" url)
-                               (not (string-prefix-p "http://github.com" url)))
+         (shallow (when (el-get-git-shallow-clone-supported-p url)
                     (el-get-plist-get-with-default source :shallow
                       el-get-git-shallow-clone)))
          (clone-args (append '("--no-pager" "clone")
@@ -71,6 +120,8 @@ found."
                              (list url pname)))
          (ok     (format "Package %s installed." package))
          (ko     (format "Could not install package %s." package)))
+    (el-get-insecure-check package url)
+
     (el-get-start-process-list
      package
      (list
@@ -116,6 +167,8 @@ found."
          (pull-args (list "--no-pager" (if checkout "fetch" "pull")))
          (ok   (format "Pulled package %s." package))
          (ko   (format "Could not update package %s." package)))
+    (el-get-insecure-check package url)
+
     (el-get-start-process-list
      package
      `((:command-name ,name
@@ -145,8 +198,7 @@ found."
 
 (defun el-get-git-compute-checksum (package)
   "Return the hash of the checked-out revision of PACKAGE."
-  (with-temp-buffer
-    (cd (el-get-package-directory package))
+  (let ((default-directory (el-get-package-directory package)))
     ;; We cannot simply check the recipe for `:type git' because it
     ;; could also be github, emacsmirror, or any other unknown git-ish
     ;; type. Instead, we check for the existence of a ".git" directory
@@ -154,16 +206,16 @@ found."
     ;; "git status" and check that it returns success.
     (assert (file-directory-p ".git") nil
             "Package %s is not a git package" package)
-    (let* ((git-executable (el-get-executable-find "git"))
-           (args (list git-executable "log" "--pretty=format:%H" "-n1"))
-           (cmd (mapconcat 'shell-quote-argument args " ")))
-      (shell-command-to-string cmd))))
+    (with-temp-buffer
+      (call-process (el-get-executable-find "git") nil '(t t) nil
+                    "log" "--pretty=format:%H" "-n1")
+      (buffer-string))))
 
 (el-get-register-method :git
   :install #'el-get-git-clone
   :update #'el-get-git-pull
   :remove #'el-get-rmdir
-  :install-hook #'el-get-git-clone-hook
+  :install-hook 'el-get-git-clone-hook
   :compute-checksum #'el-get-git-compute-checksum)
 
 (provide 'el-get-git)

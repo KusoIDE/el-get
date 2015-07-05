@@ -13,6 +13,7 @@
 ;;     Please see the README.md file from the same distribution
 
 (require 'el-get-core)
+(require 'el-get-custom)
 
 (defcustom el-get-darcs-get-hook nil
   "Hook run after darcs get."
@@ -26,6 +27,8 @@
          (name  (format "*darcs get %s*" package))
          (ok    (format "Package %s installed" package))
          (ko    (format "Could not install package %s." package)))
+    (el-get-insecure-check package url)
+
     (el-get-start-process-list
      package
      `((:command-name ,name
@@ -44,6 +47,7 @@
          (name (format "*darcs pull %s*" package))
          (ok   (format "Pulled package %s." package))
          (ko   (format "Could not update package %s." package)))
+    (el-get-insecure-check package url)
 
     (el-get-start-process-list
      package
@@ -60,6 +64,6 @@
   :install #'el-get-darcs-get
   :update #'el-get-darcs-pull
   :remove #'el-get-rmdir
-  :install-hook #'el-get-darcs-get-hook)
+  :install-hook 'el-get-darcs-get-hook)
 
 (provide 'el-get-darcs)
